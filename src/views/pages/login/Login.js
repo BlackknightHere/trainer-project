@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,8 +15,65 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { useState } from 'react'
 
 const Login = () => {
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  const handleLogin =  () => {
+    // try {
+    //   const response = await fetch('/api/auth/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       email,
+    //       password,
+    //     }),
+    //   })
+
+    //   const result = await response.json()
+      // 1. สร้าง response ปลอม (mock)
+    const mockResponse = {
+      success: true,
+      data: {
+        token: 'mock.access.jwt.token',
+        refreshToken: 'mock.refresh.jwt.token',
+        expiresIn: 900,
+        user: {
+          id: '659000000000000000000001',
+          name: 'Writer 1',
+          email: email, // ใช้ email ที่พิมพ์จริง
+          role: 'editor',
+          status: 'active',
+        },
+      },
+    }
+
+  // 2. เช็คเหมือน backend
+    if (!mockResponse.success) {
+      setError('Login failed')
+      return
+    }
+      const { token, refreshToken, expiresIn, user } = result.data
+
+      localStorage.setItem('accessToken', token)
+      localStorage.setItem('refreshToken', refreshToken)
+      localStorage.setItem('expiresAt', Date.now() + expiresIn * 1000)
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('isLoggedIn', true)
+
+      navigate('/users')
+    // },
+    // catch (err) {
+    //   setError('Server error, pls try again')
+    // }
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -32,7 +89,11 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -41,38 +102,18 @@ const Login = () => {
                       <CFormInput
                         type="password"
                         placeholder="Password"
-                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" onClick={handleLogin}>
                           Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
                         </CButton>
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>
