@@ -21,7 +21,23 @@ const Login = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+
+const checkError = () => {
+  if (!email) {
+    setErrorMessage('Fill your email')
+    return false
+  }
+
+  if (!password) {
+    setErrorMessage('Fill your password')
+    return false
+  }
+
+  // ผ่าน validation
+  setErrorMessage('')
+  return true
+}
 
   const handleLogin =  () => {
     // try {
@@ -38,34 +54,40 @@ const Login = () => {
 
     //   const result = await response.json()
       // 1. สร้าง response ปลอม (mock)
-    const mockResponse = {
+    const isValid = checkError()
+    if (!isValid) return
+      const mockResponse = {
       success: true,
       data: {
         token: 'mock.access.jwt.token',
         refreshToken: 'mock.refresh.jwt.token',
         expiresIn: 900,
         user: {
-          id: '659000000000000000000001',
-          name: 'Writer 1',
-          email: email, // ใช้ email ที่พิมพ์จริง
-          role: 'editor',
-          status: 'active',
+          id: '0001',
+          name: 'test',
+          email: 'test@gmail.com', // ใช้ email ที่พิมพ์จริง
+          role: 'admin',
+          status : 'active',
         },
       },
     }
 
   // 2. เช็คเหมือน backend
-    if (!mockResponse.success) {
-      setError('Login failed')
-      return
-    }
-      const { token, refreshToken, expiresIn, user } = result.data
+        if (!mockResponse.success) {
+          setError('Login failed')
+          return
+        }
+        // if (!mockLoginSuccess) {
+        //   setErrorMessage('อีเมลหรือรหัสผ่านไม่ถูกต้อง')
+        //   return
+        // }
+      const { token, refreshToken, expiresIn, user } = mockResponse.data
 
       localStorage.setItem('accessToken', token)
       localStorage.setItem('refreshToken', refreshToken)
       localStorage.setItem('expiresAt', Date.now() + expiresIn * 1000)
       localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('isLoggedIn', true)
+      localStorage.setItem('isLoggedIn', 'true')
 
       navigate('/users')
     // },
@@ -106,6 +128,12 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </CInputGroup>
+                    {/* Error (แสดงที่เดียว ใต้ password) */}
+                        {errorMessage && (
+                        <p className="text-danger mt-2">
+                          {errorMessage}
+                        </p>
+                    )}
                     <CRow>
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" onClick={handleLogin}>
