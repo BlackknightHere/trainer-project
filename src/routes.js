@@ -8,10 +8,10 @@ const Logout = React.lazy(() => import('./views/logout/Logout'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/users', name: 'Users', element: Users },
   { path: '/blogs', name: 'Blogs', element: Blogs },
   { path: '/blogs/:id', name: 'Blog Detail', element: BlogDetail },
+  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/logout', name: 'Logout', element: Logout },
 ]
 
